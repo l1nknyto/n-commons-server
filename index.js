@@ -6,7 +6,6 @@
 module.exports = function(options) {
   const express = require('express');
   const session = require('express-session');
-  const RedisStore = require('connect-redis')(session);
 
   var app = express();
   var server = null;
