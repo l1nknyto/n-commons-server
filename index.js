@@ -20,7 +20,11 @@ module.exports = function(options) {
     options.onSetupExpress(app);
   }
   app.use(require('morgan')('combined'));
-  app.use(express.static('public'));
+  if (options.statics) {
+    options.statics.forEach((item) => {
+      app.use(item.url, express.static(item.folder));
+    });
+  }
   app.use(require('cookie-parser')());
   app.use(require('body-parser').urlencoded({ extended: true }));
   app.use(session(options.sessionOptions));
