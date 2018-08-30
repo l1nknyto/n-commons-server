@@ -1,5 +1,21 @@
 #!/usr/bin/env node
 
+function getMorganMW()
+{
+  const path = require('path');
+  const morgan = require('morgan');
+
+  var logFile = path.join(process.env.LOG_PATH, process.env.APP_NAME.toLowerCase() +'-access-%DATE%.log');
+  var rotator = require('file-stream-rotator');
+  var stream = rotator.getStream({
+    date_format : 'YYYYMMDD',
+    filename    : logFile,
+    frequency   : 'daily',
+    verbose     : false
+  });
+  return morgan('combined', { stream:stream });
+}
+
 /**
  * options: port, isHttps, serverOptions, sessionOptions, onSetupExpress, onFinishExpress
  */
@@ -19,14 +35,14 @@ module.exports = function(options) {
   if (options.onSetupExpress) {
     options.onSetupExpress(app);
   }
-  app.use(require('morgan')('combined'));
+  app.use(getMorganMW());
   if (options.statics) {
     options.statics.forEach((item) => {
       app.use(item.url, express.static(item.folder));
     });
   }
-  app.use(require('cookie-parser')());
   app.use(require('body-parser').urlencoded({ extended: true }));
+  app.use(require('cookie-parser')());
   app.use(session(options.sessionOptions));
   if (options.onFinishExpress) {
     options.onFinishExpress(app);
