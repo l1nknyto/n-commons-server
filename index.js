@@ -1,6 +1,8 @@
 #!/usr/bin/env node
+const ServerOptions = require('./server-options');
 
-function getMorganMW() {
+function getMorganMW()
+{
   const path = require('path');
   const morgan = require('morgan');
 
@@ -18,20 +20,22 @@ function getMorganMW() {
 }
 
 /**
- * options: port, isHttps, serverOptions, sessionOptions, onSetupExpress, onFinishExpress
+ * options: ServerOptions
  */
-module.exports = function(options) {
+module.exports = function(serverOptions) {
   const express = require('express');
   const session = require('express-session');
   const toobusy = require('toobusy-js');
   const logger  = require('n-commons/logger');
 
+  var options = (serverOptions) ? serverOptions : options;
+
   var app = express();
   var server = null;
-  if (options.isHttps) {
-    server = require('https').createServer(options.serverOptions, app);
+  if (options.isHttps()) {
+    server = require('https').createServer(options.getServerOptions(), app);
   } else {
-    server = require('http').createServer(options.serverOptions, app);
+    server = require('http').createServer(options.getServerOptions(), app);
   }
 
   //-- setup middleware
@@ -42,33 +46,27 @@ module.exports = function(options) {
       next();
     }
   });
-  if (options.onSetupExpress) {
-    options.onSetupExpress(app);
-  }
+  options.onSetupExpress(app);
+
   app.use(getMorganMW());
-  if (options.statics) {
-    options.statics.forEach((item) => {
-      app.use(item.url, express.static(item.folder));
-    });
-  }
+  var statics = options.getStatics();
+  statics.forEach((item) => {
+    app.use(item.url, express.static(item.folder));
+  });
 
   app.use(require('body-parser').urlencoded({
     extended: true
   }));
   app.use(require('cookie-parser')());
-  app.use(session(options.sessionOptions));
-  if (options.onFinishExpress) {
-    options.onFinishExpress(app);
-  }
+  app.use(session(options.getSessionOptions()));
+  options.onFinishExpress(app);
 
   //-- setup router
   app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
   });
-  if (options.onSetupRouter) {
-    options.onSetupRouter(app);
-  }
+  options.onSetupRouter(app);
 
   server.listen(options.port, function() {
     logger.info('Express server listening on port ' + server.address().port);
