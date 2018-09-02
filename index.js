@@ -68,7 +68,7 @@ module.exports = function(serverOptions) {
   });
   options.onSetupRouter(app);
 
-  server.listen(options.port, function() {
+  server.listen(options.getPort(), function() {
     logger.info('Express server listening on port ' + server.address().port);
   });
 
