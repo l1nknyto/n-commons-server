@@ -46,7 +46,7 @@ module.exports = function(serverOptions) {
       next();
     }
   });
-  options.onSetupExpress(app);
+  options.onSetupExpress(app, express);
 
   app.use(getMorganMW());
   var statics = options.getStatics();
@@ -66,7 +66,7 @@ module.exports = function(serverOptions) {
     req.logout();
     res.redirect('/');
   });
-  options.onSetupRouter(app);
+  options.onSetupRouter(app, express);
 
   server.listen(options.getPort(), function() {
     logger.info('Express server listening on port ' + server.address().port);
