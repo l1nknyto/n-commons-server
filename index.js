@@ -54,9 +54,10 @@ module.exports = function(serverOptions) {
     app.use(item.url, express.static(item.folder));
   });
 
-  app.use(require('body-parser').urlencoded({
-    extended: true
-  }));
+
+  var bodyParser = require('body-parser');
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(require('cookie-parser')());
   app.use(session(options.getSessionOptions()));
   options.onFinishExpress(app);
