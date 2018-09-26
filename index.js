@@ -23,6 +23,7 @@ function getMorganMW()
  * options: ServerOptions
  */
 module.exports = function(serverOptions) {
+  const path   = require('path');
   const express = require('express');
   const session = require('express-session');
   const toobusy = require('toobusy-js');
