@@ -23,7 +23,6 @@ function getMorganMW()
  * options: ServerOptions
  */
 module.exports = function(serverOptions) {
-  const path   = require('path');
   const express = require('express');
   const session = require('express-session');
   const toobusy = require('toobusy-js');
@@ -52,10 +51,11 @@ module.exports = function(serverOptions) {
   app.use(getMorganMW());
   var statics = options.getStatics();
   if (statics) statics.forEach((item) => {
+    let staticMW = express.static(path.join(process.cwd(), item.folder));
     if (item.url) {
-      app.use(item.url, express.static(path.join(__dirname, item.folder)));
+      app.use(item.url, staticMW);
     } else {
-      app.use(express.static(path.join(__dirname, item.folder)));
+      app.use(staticMW);
     }
   });
 
