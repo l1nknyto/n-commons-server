@@ -51,7 +51,11 @@ module.exports = function(serverOptions) {
   app.use(getMorganMW());
   var statics = options.getStatics();
   if (statics) statics.forEach((item) => {
-    app.use(item.url, express.static(item.folder));
+    if (item.url) {
+      app.use(item.url, express.static(path.join(__dirname, item.folder)));
+    } else {
+      app.use(express.static(path.join(__dirname, item.folder)));
+    }
   });
 
 
