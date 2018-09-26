@@ -1,3 +1,4 @@
+const Sliced    = require('sliced');
 const Protocols = require('./protocols');
 
 function okWithRes()
@@ -23,8 +24,8 @@ function okWithRes()
       if (res) return sendError(err, res);
       if (callback) return callback(err);
     } else {
-      if (onSuccess) return onSuccess.apply(onSuccess, sliced(arguments, 1));
-      if (res) return res.json({ ok:true }).end();
+      if (onSuccess) return onSuccess.apply(onSuccess, Sliced(arguments, 1));
+      if (res) return res.json(Protocols.OK).end();
     }
   };
 }
