@@ -3,7 +3,7 @@ const ServerOptions = require('./server-options');
 
 function getMorganMW()
 {
-  const path = require('path');
+  const path   = require('path');
   const morgan = require('morgan');
 
   var logFile = path.join(process.env.LOG_PATH, process.env.APP_NAME.toLowerCase() + '-access-%DATE%.log');
@@ -23,6 +23,7 @@ function getMorganMW()
  * options: ServerOptions
  */
 module.exports = function(serverOptions) {
+  const path   = require('path');
   const express = require('express');
   const session = require('express-session');
   const toobusy = require('toobusy-js');
