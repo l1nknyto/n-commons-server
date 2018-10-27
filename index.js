@@ -90,7 +90,7 @@ module.exports = function(serverOptions) {
   });
 
   return {
-    app: app,
-    server: server
+    app    : app,
+    server : server
   };
 }

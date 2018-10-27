@@ -30,10 +30,10 @@ function okWithRes()
   };
 }
 
-function sendError(err, res, defaultResponse)
+function sendError(err, res, protocol)
 {
-  if (defaultResponse) {
-    res.status(Protocols.STATUS_ERR).json(defaultResponse).end();
+  if (protocol) {
+    res.status(Protocols.STATUS_ERR).json(protocol).end();
   } else if (err && err.protocol) {
     res.status(Protocols.STATUS_ERR).json(err.protocol).end();
   } else if (err && err.errCode) {
