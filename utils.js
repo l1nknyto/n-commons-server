@@ -40,6 +40,8 @@ function sendError(err, res, protocol)
     res.status(Protocols.STATUS_ERR).json(err).end();
   } else if (err && err.empty) {
     res.status(Protocols.STATUS_ERR).json(Protocols.DATA_NOT_FOUND).end();
+  } else if (err && err.duplicate) {
+    res.status(Protocols.STATUS_ERR).json(Protocols.DATA_DUPLICATE_KEY).end();
   } else {
     res.status(Protocols.STATUS_ERR_UNKNOWN).json(Protocols.INTERNAL_SERVER_ERROR).end();
   }
