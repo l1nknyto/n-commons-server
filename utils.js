@@ -1,4 +1,5 @@
 const Sliced    = require('sliced');
+const Logger    = require('n-commons');
 const Protocols = require('./protocols');
 
 function okWithRes()
@@ -43,6 +44,7 @@ function sendError(err, res, protocol)
   } else if (err && err.duplicate) {
     res.status(Protocols.STATUS_ERR).json(Protocols.DATA_DUPLICATE_KEY).end();
   } else {
+    if (err) Logger.error(err);
     res.status(Protocols.STATUS_ERR_UNKNOWN).json(Protocols.INTERNAL_SERVER_ERROR).end();
   }
 }
