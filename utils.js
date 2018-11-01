@@ -1,5 +1,5 @@
 const Sliced    = require('sliced');
-const Logger    = require('n-commons');
+const Logger    = require('n-commons/logger');
 const Protocols = require('./protocols');
 
 function okWithRes()
