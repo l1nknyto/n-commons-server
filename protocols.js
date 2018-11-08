@@ -15,7 +15,7 @@ var instance = {
 
 function ok(data)
 {
-  return Object.assign(instance.OK, data);
+  return Object.assign(Object.assign({}, instance.OK), data);
 }
 
 /**
