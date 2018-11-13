@@ -19,6 +19,24 @@ function getMorganMW()
   });
 }
 
+function setupTooBusy(app, toobusyOptions, logger)
+{
+  var toobusy = require('toobusy-js');
+  toobusy.maxLag(toobusyOptions.maxLag);
+  toobusy.interval(toobusyOptions.interval);
+  toobusy.onLag(function(currentLag) {
+    logger.info("Event loop lag detected! Latency: " + currentLag + "ms");
+  });
+
+  app.use(function(req, res, next) {
+    if (toobusy()) {
+      res.status(503).send("Server busy right now. Try again later.");
+    } else {
+      next();
+    }
+  });
+}
+
 /**
  * options: ServerOptions
  */
@@ -29,7 +47,7 @@ module.exports = function(serverOptions) {
   const toobusy = require('toobusy-js');
   const logger  = require('n-commons/logger');
 
-  var options = (serverOptions) ? serverOptions : options;
+  var options = (serverOptions) ? serverOptions : new ServerOptions();
 
   var app = express();
   var server = null;
@@ -40,13 +58,7 @@ module.exports = function(serverOptions) {
   }
 
   //-- setup middleware
-  app.use(function(req, res, next) {
-    if (toobusy()) {
-      res.status(503).send("Server busy right now. Try again later.");
-    } else {
-      next();
-    }
-  });
+  setupTooBusy(app, options.getToobusyOptions(), logger);
   options.onSetupExpress(app, express);
 
   app.use(getMorganMW());
