@@ -42,7 +42,7 @@ module.exports = function(serverOptions) {
   //-- setup middleware
   app.use(function(req, res, next) {
     if (toobusy()) {
-      res.send(503, "Server busy right now.");
+      res.status(503).send("Server busy right now. Try again later.");
     } else {
       next();
     }

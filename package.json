@@ -1,6 +1,6 @@
 {
   "name": "n-commons-server",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Node Commons utilities for Server",
   "main": "index.js",
   "scripts": {
