@@ -10,6 +10,7 @@ class ServerOptions
 
   getToobusyOptions() {
     return {
+      enable   : true,
       maxLag   : 70,
       interval : 500
     };

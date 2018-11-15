@@ -19,22 +19,20 @@ function getMorganMW()
   });
 }
 
-function setupTooBusy(app, toobusyOptions, logger)
+function setupTooBusy(app, toobusyOptions)
 {
-  var toobusy = require('toobusy-js');
-  toobusy.maxLag(toobusyOptions.maxLag);
-  toobusy.interval(toobusyOptions.interval);
-  toobusy.onLag(function(currentLag) {
-    logger.info("Event loop lag detected! Latency: " + currentLag + "ms");
-  });
-
-  app.use(function(req, res, next) {
-    if (toobusy()) {
-      res.status(503).send("Server busy right now. Try again later.");
-    } else {
-      next();
-    }
-  });
+  if (toobusyOptions.enable) {
+    var toobusy = require('toobusy-js');
+    toobusy.maxLag(toobusyOptions.maxLag);
+    toobusy.interval(toobusyOptions.interval);
+    app.use(function(req, res, next) {
+      if (toobusy()) {
+        res.status(503).send("Server busy right now. Try again later.");
+      } else {
+        next();
+      }
+    });
+  }
 }
 
 /**
@@ -44,7 +42,6 @@ module.exports = function(serverOptions) {
   const path   = require('path');
   const express = require('express');
   const session = require('express-session');
-  const toobusy = require('toobusy-js');
   const logger  = require('n-commons/logger');
 
   var options = (serverOptions) ? serverOptions : new ServerOptions();
@@ -58,7 +55,7 @@ module.exports = function(serverOptions) {
   }
 
   //-- setup middleware
-  setupTooBusy(app, options.getToobusyOptions(), logger);
+  setupTooBusy(app, options.getToobusyOptions());
   options.onSetupExpress(app, express);
 
   app.use(getMorganMW());
@@ -71,7 +68,6 @@ module.exports = function(serverOptions) {
       app.use(staticMW);
     }
   });
-
 
   var bodyParser = require('body-parser');
   app.use(bodyParser.json());
@@ -93,11 +89,10 @@ module.exports = function(serverOptions) {
 
   process.on('uncaughtException', function(err) {
     logger.error(err);
-    toobusy.shutdown();
     try {
       require('forky').disconnect();
     } catch(e) {
-      console.error(e);
+      logger.error('forky.disconnect', e);
     }
   });
 
