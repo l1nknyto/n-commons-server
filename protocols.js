@@ -2,6 +2,7 @@ var instance = {
   init                  : init,
   ok                    : ok,
   notOk                 : notOk,
+  customMessage         : customMessage,
   appendMessage         : appendMessage,
   STATUS_OK             : 200,
   STATUS_ERR            : 501,
