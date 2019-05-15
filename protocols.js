@@ -38,8 +38,13 @@ function notOk(err)
 
 function appendMessage(protocol, message)
 {
+  return customMessage(protocol, protocol.message + ' ' + message);
+}
+
+function customMessage(protocol, message)
+{
   var newProtocol = Object.assign({}, protocol);
-  newProtocol.message = newProtocol.message + ' ' + message;
+  newProtocol.message = message;
   return newProtocol;
 }
 
