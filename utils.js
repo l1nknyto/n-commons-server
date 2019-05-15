@@ -43,8 +43,11 @@ function sendError(err, res, protocol)
     res.status(Protocols.STATUS_ERR).json(Protocols.DATA_NOT_FOUND).end();
   } else if (err && err.duplicate) {
     res.status(Protocols.STATUS_ERR).json(Protocols.DATA_DUPLICATE_KEY).end();
+  } else if (err) {
+    Logger.error(err);
+    var json = (err.message) ? Protocols.customMessage(Protocols.INTERNAL_SERVER_ERROR, err.message) : Protocols.INTERNAL_SERVER_ERROR;
+    res.status(Protocols.STATUS_ERR_UNKNOWN).json(json).end();
   } else {
-    if (err) Logger.error(err);
     res.status(Protocols.STATUS_ERR_UNKNOWN).json(Protocols.INTERNAL_SERVER_ERROR).end();
   }
 }
